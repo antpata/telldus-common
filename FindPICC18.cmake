@@ -1,5 +1,6 @@
 
 SET(PICC18_PATH "/opt/hitech/picc-18/pro/9.63PL3/bin/picc18" CACHE STRING "Path to picc-18 compiler")
+SET(CMAKE_EXE_LINKER_FLAGS "")
 
 FUNCTION(ADD_HEX _project_name _default_chip)
 
