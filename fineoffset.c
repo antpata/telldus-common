@@ -5,7 +5,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-#define SHORT(x) (x<10)
+#define SHORT(x) (x<11)
 #define LONG(x) (x>13)
 
 #define INVALID_DATA 2
