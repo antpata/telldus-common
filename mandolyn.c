@@ -9,6 +9,9 @@
 
 #define INVALID_DATA 2
 
+// For some reason this must be a global variable (non const) or else printf() seems to behave strange!
+char MODEL[] = "temperaturehimidity";
+
 unsigned char mandolynBit(unsigned short *scanP, unsigned char *scanBit) {
 	UCHAR8 b1 = rfCountSimilar(scanP, scanBit);
 	if (ZERO(b1)) {
@@ -59,7 +62,7 @@ void parseMandolyn(unsigned short scanP, unsigned char scanBit) {
 	rfMessageBeginRaw();
 		rfMessageAddString("class", "sensor");
 		rfMessageAddString("protocol", "mandolyn");
-		rfMessageAddString("model", "temperaturehumidity");
+		rfMessageAddString("model", MODEL);
 		rfMessageAddLong("data", data);
 	rfMessageEnd(1);
 }
