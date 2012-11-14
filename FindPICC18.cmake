@@ -6,19 +6,20 @@ FUNCTION(ADD_HEX _project_name _default_chip)
 
 	SET(CHIP ${_default_chip} CACHE STRING "The chip to build for")
 	SET(_hex_file "${_project_name}.hex")
-	
+
 	GET_DIRECTORY_PROPERTY(_include_dirs INCLUDE_DIRECTORIES)
-	
+
 	SET(_include_arg "-I${CMAKE_CURRENT_SOURCE_DIR}")
 	FOREACH(_dir ${_include_dirs})
 		LIST(APPEND _include_arg "-I${_dir}")
 	ENDFOREACH(_dir)
-	
+
 	#Loop all sources and setup a custom build-command for each
 	FOREACH(_file ${ARGN})
 		GET_FILENAME_COMPONENT(_abs_file ${_file} ABSOLUTE)
 		GET_FILENAME_COMPONENT(_filename ${_file} NAME_WE)
-		
+		GET_FILENAME_COMPONENT(_ext ${_file} EXT)
+
 		GET_PROPERTY(_dir SOURCE ${_file} PROPERTY P1_PATH)
 		IF (NOT _dir)
 			GET_FILENAME_COMPONENT(_dir ${_file} PATH)
@@ -30,17 +31,19 @@ FUNCTION(ADD_HEX _project_name _default_chip)
 			SET(_p1_path "${_dir}/${_filename}.p1")
 			MAKE_DIRECTORY(${CMAKE_BINARY_DIR}/${_dir})
 		ENDIF(_dir STREQUAL "")
-		
-		ADD_CUSTOM_COMMAND(OUTPUT ${_p1_path}
-			COMMAND ${PICC18_PATH} --chip=${CHIP} ${CMAKE_C_FLAGS} --errformat='%f:%l: error[%n]: %s' --outdir=${CMAKE_BINARY_DIR}/${_dir} ${_include_arg} --pass1 "${_abs_file}"
-			DEPENDS ${_abs_file}
-			IMPLICIT_DEPENDS C ${_abs_file}
-			COMMENT "Compiling ${_file}"
-		)
-		LIST(APPEND _p1_sources ${_p1_path})
+
+		IF(_ext STREQUAL ".c")
+			ADD_CUSTOM_COMMAND(OUTPUT ${_p1_path}
+				COMMAND ${PICC18_PATH} --chip=${CHIP} ${CMAKE_C_FLAGS} --errformat='%f:%l: error[%n]: %s' --outdir=${CMAKE_BINARY_DIR}/${_dir} ${_include_arg} --pass1 "${_abs_file}"
+				DEPENDS ${_abs_file}
+				IMPLICIT_DEPENDS C ${_abs_file}
+				COMMENT "Compiling ${_file}"
+			)
+			LIST(APPEND _p1_sources ${_p1_path})
+		ENDIF()
 		LIST(APPEND _sources ${_file})
 	ENDFOREACH(_file)
-	
+
 	ADD_CUSTOM_COMMAND(OUTPUT ${_hex_file}
 		COMMAND ${PICC18_PATH} --chip=${CHIP} ${CMAKE_EXE_LINKER_FLAGS} ${_p1_sources} --outdir=${CMAKE_BINARY_DIR} -O${_hex_file}
 		DEPENDS ${_p1_sources}
