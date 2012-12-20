@@ -1,4 +1,5 @@
 #include "fineoffset.h"
+#include "crc.h"
 #include "receive.h"
 #include "message.h"
 #include <string.h>
@@ -10,6 +11,9 @@
 
 #define INVALID_DATA 2
 #define DATA_LENGTH 5
+
+#define CRCINIT 0x00
+#define CRCPOLYNOM 0x131
 
 unsigned char fineOffsetBit(unsigned short *scanP, unsigned char *scanBit) {
 	UCHAR8 b1 = rfCountSimilar(scanP, scanBit);
@@ -27,9 +31,8 @@ unsigned char fineOffsetBit(unsigned short *scanP, unsigned char *scanBit) {
 
 void parseFineOffset(unsigned short scanP, unsigned char scanBit) {
 	unsigned char buffer[DATA_LENGTH];
-
 	rfRetreatBit(&scanP, &scanBit); //skip last bit
-
+	UCHAR8 lastbyte = 0;
 	for(int i=DATA_LENGTH-1; i>=0; --i) {
 		UCHAR8 byte = 0;
 		for(int j=0; j<8; ++j){
@@ -41,7 +44,20 @@ void parseFineOffset(unsigned short scanP, unsigned char scanBit) {
 				byte |= (1<<j);
 			}
 		}
+		if( i == (DATA_LENGTH-1)) {
+			lastbyte = byte;
+		}
+
 		buffer[i] = byte;
+	}
+
+	unsigned short int crc = CRCINIT;
+	for(int j=0; j<DATA_LENGTH-1; j++){
+		crc = calculateCrc8(crc, buffer[j], CRCPOLYNOM);
+	}
+
+	if(crc != lastbyte){
+		return; //checksum did not match
 	}
 	rfMessageBeginRaw();
 		rfMessageAddString("class", "sensor");

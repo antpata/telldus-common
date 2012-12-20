@@ -1,6 +1,7 @@
 
 SET(_SOURCES
 	arctech.c
+	crc.c
 	everflourish.c
 	fineoffset.c
 	mandolyn.c
