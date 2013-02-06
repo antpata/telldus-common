@@ -203,7 +203,6 @@ void rfReceiveTask() {
 	parseEverFlourish(startSilenceP, startSilenceBit);
 	parseMandolyn(startSilenceP, startSilenceBit);
 	parseX10(startSilenceP, startSilenceBit);
-	clearOregon();
 	parsed = TRUE;
 	return;
 }

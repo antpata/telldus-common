@@ -11,20 +11,22 @@ enum {
 	SM_PARSE_DATA
 } static state = SM_WAIT;
 
-#define BIG_PULSE(x) (x>=12 && x<=22)
-#define SMALL_PULSE(x) (x>=4 && x<=12)
+#define BIG_PULSE(x) (x>=13 && x<=22)
+#define SMALL_PULSE(x) (x>=4 && x<=13)
 
 #define MORE_DATA_NEEDED -1
 #define INVALID_DATA -2
 
 static unsigned char byteCnt = 0;
 static unsigned char bitCnt = 0;
+static unsigned char totByteCnt = 0;
+signed int byteLength = -1;
 
 void clearOregon() {
 	byteCnt = 0;
 	bitCnt = 0;
+	totByteCnt = 0;
 	state = SM_WAIT;
-//	LATD2 = 0;
 }
 
 signed char oregonBit(unsigned char level, unsigned char count) {
@@ -36,13 +38,14 @@ signed char oregonBit(unsigned char level, unsigned char count) {
 			return INVALID_DATA;
 		}
 		bitCnt = 1;
-	
+
 	} else if (bitCnt == 1) {
 		//Second pulse must be long
-		if (!BIG_PULSE(count)) {
+		if (!BIG_PULSE(count) && totByteCnt!=byteLength){ //special check - last byte might have strange values
 			bitCnt = 0;
 			return INVALID_DATA;
 		}
+
 		b1 = level;
 		bitCnt = 2;
 		return b1;
@@ -78,6 +81,7 @@ signed int oregonByte(unsigned char level, unsigned char count) {
 	if (b1) {
 		byte |= (1<<7);
 	}
+	++totByteCnt;
 	++byteCnt;
 	if (byteCnt < 8) {
 		return MORE_DATA_NEEDED;
@@ -92,14 +96,14 @@ void streamOregon(unsigned char level, unsigned char count) {
 	static signed int b1;
 	static unsigned char length = 0;
 	static unsigned char buffer[8];
-
+	byteLength = -1;
 
 	if (level) {
 		count+=3;
 	} else {
 		count-=3;
 	}
-	
+
 	switch(state) {
 		case SM_WAIT:
 			if (BIG_PULSE(count)) {
@@ -109,7 +113,6 @@ void streamOregon(unsigned char level, unsigned char count) {
 			}
 			if (SMALL_PULSE(count)) {
 				if (cnt > 25) {
-//					LATD2 = 1;
 					state=SM_PARSE_ID;
 					id = 0;
 				}
@@ -132,10 +135,12 @@ void streamOregon(unsigned char level, unsigned char count) {
 					switch (id) {
 						case 0xEA4C:
 							length = 6;
+							byteLength = 63;
 							break;
 						case 0x0A4D:
 						case 0x1A2D:
 							length = 8;
+							byteLength = 79;
 							break;
 						default:
 							clearOregon();
