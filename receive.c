@@ -196,14 +196,19 @@ void rfReceiveTask() {
 // 		printf("%i\r\n", dist );
 // 		return 0;
 	}
-	parseArcTechSelflearning(startSilenceP, startSilenceBit);
-	parseArcTechCodeSwitch(startSilenceP, startSilenceBit);
-	parseFineOffset(startSilenceP, startSilenceBit);
+	char matched = 0;
+	matched += parseArcTechSelflearning(startSilenceP, startSilenceBit);
+	matched += parseArcTechCodeSwitch(startSilenceP, startSilenceBit);
+	matched += parseFineOffset(startSilenceP, startSilenceBit);
 	//matches += parseSartano(startSilenceP, startSilenceBit);  //will be detected by arctech
-	parseEverFlourish(startSilenceP, startSilenceBit);
-	parseMandolyn(startSilenceP, startSilenceBit);
-	parseX10(startSilenceP, startSilenceBit);
+	matched += parseEverFlourish(startSilenceP, startSilenceBit);
+	matched += parseMandolyn(startSilenceP, startSilenceBit);
+	matched += parseX10(startSilenceP, startSilenceBit);
 	parsed = TRUE;
+	if (matched) {
+		scanP = 0;
+		dataP = 0;
+	}
 	return;
 }
 

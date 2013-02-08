@@ -1,1 +1,1 @@
-void parseFineOffset(unsigned short scanP, unsigned char scanBit);
+char parseFineOffset(unsigned short scanP, unsigned char scanBit);

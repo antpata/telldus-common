@@ -1,1 +1,1 @@
-void parseMandolyn(unsigned short scanP, unsigned char scanBit);
+char parseMandolyn(unsigned short scanP, unsigned char scanBit);

@@ -24,7 +24,7 @@ unsigned char mandolynBit(unsigned short *scanP, unsigned char *scanBit) {
 	return INVALID_DATA;
 }
 
-void parseMandolyn(unsigned short scanP, unsigned char scanBit) {
+char parseMandolyn(unsigned short scanP, unsigned char scanBit) {
 	unsigned short P, B;
 	unsigned char preamble = 0;
 	unsigned long data = 0;
@@ -38,7 +38,7 @@ void parseMandolyn(unsigned short scanP, unsigned char scanBit) {
 	for(int i=0;i<32;++i){
 		UCHAR8 b = mandolynBit(&scanP, &scanBit);
 		if (b == INVALID_DATA) {
-			return;
+			return 0;
 		}
 		if (b) {
 			data |= mask;
@@ -49,14 +49,14 @@ void parseMandolyn(unsigned short scanP, unsigned char scanBit) {
 	for(int i=0;i<4;++i){
 		UCHAR8 b = mandolynBit(&scanP, &scanBit);
 		if (b == INVALID_DATA) {
-			return;
+			return 0;
 		}
 		if (b) {
 			preamble |= (1<<i);
 		}
 	}
 	if (preamble != 0xC) {
-		return;
+		return 0;
 	}
 
 	rfMessageBeginRaw();
@@ -65,4 +65,5 @@ void parseMandolyn(unsigned short scanP, unsigned char scanBit) {
 		rfMessageAddString("model", MODEL);
 		rfMessageAddLong("data", data);
 	rfMessageEnd(1);
+	return 1;
 }

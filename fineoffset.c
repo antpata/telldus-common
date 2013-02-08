@@ -29,7 +29,7 @@ unsigned char fineOffsetBit(unsigned short *scanP, unsigned char *scanBit) {
 	return INVALID_DATA;
 }
 
-void parseFineOffset(unsigned short scanP, unsigned char scanBit) {
+char parseFineOffset(unsigned short scanP, unsigned char scanBit) {
 	unsigned char buffer[DATA_LENGTH];
 	rfRetreatBit(&scanP, &scanBit); //skip last bit
 	UCHAR8 lastbyte = 0;
@@ -38,7 +38,7 @@ void parseFineOffset(unsigned short scanP, unsigned char scanBit) {
 		for(int j=0; j<8; ++j){
 			UCHAR8 b = fineOffsetBit(&scanP, &scanBit);
 			if (b == INVALID_DATA) {
-				return;
+				return 0;
 			}
 			if (b) {
 				byte |= (1<<j);
@@ -57,11 +57,12 @@ void parseFineOffset(unsigned short scanP, unsigned char scanBit) {
 	}
 
 	if(crc != lastbyte){
-		return; //checksum did not match
+		return 0; //checksum did not match
 	}
 	rfMessageBeginRaw();
 		rfMessageAddString("class", "sensor");
 		rfMessageAddString("protocol", "fineoffset");
 		rfMessageAddHexString("data", buffer, DATA_LENGTH);
 	rfMessageEnd(1);
+	return 1;
 }
