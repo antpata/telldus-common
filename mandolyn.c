@@ -10,7 +10,7 @@
 #define INVALID_DATA 2
 
 // For some reason this must be a global variable (non const) or else printf() seems to behave strange!
-char MODEL[] = "temperaturehimidity";
+char MODEL[] = "temperaturehumidity";
 
 unsigned char mandolynBit(unsigned short *scanP, unsigned char *scanBit) {
 	UCHAR8 b1 = rfCountSimilar(scanP, scanBit);
