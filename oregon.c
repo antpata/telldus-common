@@ -27,6 +27,7 @@ void clearOregon() {
 	bitCnt = 0;
 	totByteCnt = 0;
 	state = SM_WAIT;
+	byteLength = -1;
 }
 
 signed char oregonBit(unsigned char level, unsigned char count) {
@@ -96,7 +97,6 @@ void streamOregon(unsigned char level, unsigned char count) {
 	static signed int b1;
 	static unsigned char length = 0;
 	static unsigned char buffer[8];
-	byteLength = -1;
 
 	if (level) {
 		count+=3;
