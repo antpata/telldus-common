@@ -24,7 +24,7 @@ void rfMessageAddString(const char *key, const char *value) {
 void rfMessageAddHexString(const char *key, const char *value, const unsigned char length) {
 	buffer << key << ":";
 	for(unsigned char i = 0; i < length; ++i) {
-		buffer << (int)(value[i] & 0xFF);
+		buffer << (int)(value[i] >> 4 & 0xF) << (int)(value[i] & 0xF);
 	}
 	buffer << ";";
 }
