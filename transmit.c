@@ -7,11 +7,16 @@ volatile unsigned char rfCurrentTime = 0;
 volatile bit rfNewTime, rfNextIsZero;
 
 void rfTransmitUpdate() {
-	
+
 	if (rfCurrentTime == 0) {
+		rfNewTime = 1;
+		if (!rfNextTime) {
+			//next time haven't been calculated yet, try again next time
+			return;
+		}
 		//Load next time
 		rfCurrentTime = rfNextTime;
-		rfNewTime = 1;
+		rfNextTime = 0;
 		if (!rfNextIsZero) {
 			SENDER ^= 1;
 		} else {
@@ -30,7 +35,8 @@ void rfSend(const char *string) {
 	rfNextTime = string[0];
 	TMR3ON=1;
 	while(!rfNewTime);
-	
+
+	TMR2IE=0; //disable this timer (pvm) to avoid these interrupts during send
 	for(unsigned short i = 1; string[i] != 0; ++i) {
 		if (string[i] == 1) {
 			rfNextIsZero = 1;
@@ -40,11 +46,12 @@ void rfSend(const char *string) {
 		rfNextTime = string[i];
 		while(!rfNewTime);
 	}
+	TMR2IE=1;
 
 	//End
 	rfNewTime = 0;
 	while(!rfNewTime);
-	
+
 	TMR3ON=0;
 	SENDER = 0;
 }
