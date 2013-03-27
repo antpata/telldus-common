@@ -2,6 +2,7 @@
 #include "arctech.h"
 #include "everflourish.h"
 #include "fineoffset.h"
+#include "hasta.h"
 #include "mandolyn.h"
 #include "oregon.h"
 #include "x10.h"
@@ -139,6 +140,7 @@ void rfReceiveTask() {
 			}
 			if (count0 > 0) {
 				streamOregon(0, count0);
+				streamHasta(0, count0);
 			}
 			++count1;
 			count0=0;
@@ -150,11 +152,12 @@ void rfReceiveTask() {
 			}
 			if (count1 > 0) {
 				streamOregon(1, count1);
+				streamHasta(1, count1);
 			}
 			++count0;
 			count1=0;
 		}
-		
+
 		//Advance to next bit
 		scanBit >>= 1;
 		if (scanBit == 0) {

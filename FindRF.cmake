@@ -4,6 +4,7 @@ SET(_SOURCES
 	crc.c
 	everflourish.c
 	fineoffset.c
+	hasta.c
 	mandolyn.c
 	oregon.c
 	receive.c
