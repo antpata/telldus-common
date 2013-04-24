@@ -14,6 +14,12 @@ FUNCTION(ADD_HEX _project_name _default_chip)
 		LIST(APPEND _include_arg "-I${_dir}")
 	ENDFOREACH(_dir)
 
+	GET_DIRECTORY_PROPERTY(_definitions DIRECTORY ${CMAKE_SOURCE_DIR} COMPILE_DEFINITIONS)
+
+	FOREACH(_def ${_definitions})
+		LIST(APPEND _definitionlist "-D${_def}")
+	ENDFOREACH(_def)
+
 	#Loop all sources and setup a custom build-command for each
 	FOREACH(_file ${ARGN})
 		GET_FILENAME_COMPONENT(_abs_file ${_file} ABSOLUTE)
@@ -34,7 +40,7 @@ FUNCTION(ADD_HEX _project_name _default_chip)
 
 		IF(_ext STREQUAL ".c")
 			ADD_CUSTOM_COMMAND(OUTPUT ${_p1_path}
-				COMMAND ${PICC18_PATH} --chip=${CHIP} ${CMAKE_C_FLAGS} --errformat='%f:%l: error[%n]: %s' --outdir=${CMAKE_BINARY_DIR}/${_dir} ${_include_arg} --pass1 "${_abs_file}"
+				COMMAND ${PICC18_PATH} ${_definitionlist} --chip=${CHIP} ${CMAKE_C_FLAGS} --errformat='%f:%l: error[%n]: %s' --outdir=${CMAKE_BINARY_DIR}/${_dir} ${_include_arg} --pass1 "${_abs_file}"
 				DEPENDS ${_abs_file}
 				IMPLICIT_DEPENDS C ${_abs_file}
 				COMMENT "Compiling ${_file}"
