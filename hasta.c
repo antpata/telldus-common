@@ -20,11 +20,22 @@ enum {
 #define BIG_PULSE_OLD(x) (x>=5 && x<=7)
 #define SMALL_PULSE_NEW(x) (x>=4 && x<=8)
 #define SMALL_PULSE_OLD(x) (x>=2 && x<=4)
+#ifdef TELLSTICK_DUO
+//duo
+#define FIRST_PULSE(x) (x>=77 && x<=81) //typically 78-79
+#define SECOND_PULSE_NEW(x) (x>=40 && x<=43)	//typically 41-42
+#define SECOND_PULSE_OLD(x) (x>=26 && x<=29)  //typically 27 (28)
+#define THIRD_PULSE_NEW(x) (x>=25 && x<=28)  //typically 26 (27)
+#else
+//net
 #define FIRST_PULSE(x) (x>=86 && x<=91) //typically 88
 #define SECOND_PULSE_NEW(x) (x>=43 && x<=46)	//typically 44-45
 #define SECOND_PULSE_OLD(x) (x>=28 && x<=31)  //typically 29-30
 #define THIRD_PULSE_NEW(x) (x>=27 && x<=30)  //typically 28-29
-#define FOURTH_PULSE_NEW(x) (x>=5 && x<=8)  //typically 6-7
+#endif
+
+
+#define FOURTH_PULSE_NEW(x) (x>=4 && x<=8)  //typically 6-7 (5 for Duo)
 
 static unsigned char bytecount = 0;
 static unsigned char hastabyte = 0;
@@ -43,11 +54,9 @@ void clearHasta() {
 	pulsecount = 0;
 	bytecount = 0;
 	hastabyte = 0;
-
 }
 
 void streamHasta(unsigned char level, unsigned char count) {
-
 	switch(hastastate) {
 		case SM_NONE:
 			if (level && FIRST_PULSE(count)) {
@@ -60,7 +69,6 @@ void streamHasta(unsigned char level, unsigned char count) {
 				break;
 			}
 			if (SECOND_PULSE_NEW(count)) {
-				//printf("b");
 				hastastate = SM_SECOND_NEW;
 				break;
 			}
@@ -75,7 +83,6 @@ void streamHasta(unsigned char level, unsigned char count) {
 			clearHasta();
 			break;
 		case SM_THIRD_NEW:
-			//printf("u: %i ", count);
 			if (FOURTH_PULSE_NEW(count)){
 				hastastate = SM_NEW_PARSE;
 				break;
