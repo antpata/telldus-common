@@ -31,7 +31,7 @@ enum {
 #define FIRST_PULSE(x) (x>=86 && x<=91) //typically 88
 #define SECOND_PULSE_NEW(x) (x>=43 && x<=46)	//typically 44-45
 #define SECOND_PULSE_OLD(x) (x>=28 && x<=31)  //typically 29-30
-#define THIRD_PULSE_NEW(x) (x>=27 && x<=30)  //typically 28-29
+#define THIRD_PULSE_NEW(x) (x>=27 && x<=31)  //typically 28-29
 #endif
 
 
