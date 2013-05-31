@@ -7,6 +7,7 @@ SET(_SOURCES
 	hasta.c
 	mandolyn.c
 	oregon.c
+	oregonv3.c
 	receive.c
 	transmit.c
 	x10.c

@@ -5,6 +5,7 @@
 #include "hasta.h"
 #include "mandolyn.h"
 #include "oregon.h"
+#include "oregonv3.h"
 #include "x10.h"
 #include "config.h"
 #include <stdio.h>
@@ -140,6 +141,7 @@ void rfReceiveTask() {
 			}
 			if (count0 > 0) {
 				streamOregon(0, count0);
+				streamOregonV3(0, count0);
 				streamHasta(0, count0);
 			}
 			++count1;
@@ -152,6 +154,7 @@ void rfReceiveTask() {
 			}
 			if (count1 > 0) {
 				streamOregon(1, count1);
+				streamOregonV3(1, count1);
 				streamHasta(1, count1);
 			}
 			++count0;
