@@ -19,7 +19,7 @@ enum {
 #define MORE_DATA_NEEDED -1
 #define INVALID_DATA -2
 
-static unsigned char halfTime = 0;
+static unsigned int halfTime = 0;
 static unsigned char preambleSyncCount = 0;
 static unsigned char byteCntV3 = 0;
 static unsigned char nibblePositionV3 = 0;
