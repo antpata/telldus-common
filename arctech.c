@@ -52,6 +52,11 @@ char parseArcTechCodeSwitch(unsigned short scanP, unsigned char scanBit) {
 
 	}
 
+	if(data == 0){
+		//avoid common invalid signals
+		return 0;
+	}
+
 	rfMessageBeginRaw();
 	rfMessageAddString("protocol", "arctech");
 	rfMessageAddString("model", "codeswitch");
