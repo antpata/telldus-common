@@ -11,7 +11,7 @@ enum {
 	SM_PARSE_DATA
 } static state = SM_WAIT;
 
-#define BIG_PULSE(x) (x>=13 && x<=22)
+#define BIG_PULSE(x) (x>=12 && x<=22)
 #define SMALL_PULSE(x) (x>=4 && x<=13)
 
 #define MORE_DATA_NEEDED -1
