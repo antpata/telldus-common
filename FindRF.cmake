@@ -2,15 +2,16 @@
 SET(_SOURCES
 	arctech.c
 	crc.c
-	everflourish.c
-	fineoffset.c
-	hasta.c
-	mandolyn.c
-	oregon.c
-	oregonv3.c
+#        everflourish.c
+#	fineoffset.c
+#	mandolyn.c
 	receive.c
 	transmit.c
 	x10.c
+#        oregon.c
+#        oregonv3.c
+#        hasta.c
+        termo.c
 )
 
 FOREACH(_file ${_SOURCES})

@@ -7,6 +7,7 @@
 #include "oregon.h"
 #include "oregonv3.h"
 #include "x10.h"
+#include "termo.h"
 #include "config.h"
 #include <stdio.h>
 #include <htc.h>
@@ -139,11 +140,11 @@ void rfReceiveTask() {
 				stopSilenceP = scanP;
 				stopSilenceBit = scanBit;
 			}
-			if (count0 > 0) {
-				streamOregon(0, count0);
+/*            if (count0 > 0) {
+            //	streamOregon(0, count0);
 				streamOregonV3(0, count0);
 				streamHasta(0, count0);
-			}
+            }*/
 			++count1;
 			count0=0;
 			parsed = FALSE;
@@ -152,11 +153,11 @@ void rfReceiveTask() {
 				startSilenceP = scanP;
 				startSilenceBit = scanBit;
 			}
-			if (count1 > 0) {
-				streamOregon(1, count1);
+ /*           if (count1 > 0) {
+            //	streamOregon(1, count1);
 				streamOregonV3(1, count1);
 				streamHasta(1, count1);
-			}
+            }*/
 			++count0;
 			count1=0;
 		}
@@ -195,7 +196,7 @@ void rfReceiveTask() {
 	//We calculate stopSilence (start of data) until startSilence (end of data)
 	signed int dist = calculateDistance(stopSilenceP, startSilenceP);
 // 	printf("%u\r\n", dist);
-	if (dist >= 0 && dist < 50) {
+    if (dist >= 0 && dist < 50) {
 		return;
 	}
 	if (dist < 158 || dist > 162) { //TODO: For now, remove later!
@@ -205,11 +206,12 @@ void rfReceiveTask() {
 	char matched = 0;
 	matched += parseArcTechSelflearning(startSilenceP, startSilenceBit);
 	matched += parseArcTechCodeSwitch(startSilenceP, startSilenceBit);
-	matched += parseFineOffset(startSilenceP, startSilenceBit);
-	//matches += parseSartano(startSilenceP, startSilenceBit);  //will be detected by arctech
-	matched += parseEverFlourish(startSilenceP, startSilenceBit);
-	matched += parseMandolyn(startSilenceP, startSilenceBit);
-	matched += parseX10(startSilenceP, startSilenceBit);
+//	matched += parseFineOffset(startSilenceP, startSilenceBit);
+//    matches += parseSartano(startSilenceP, startSilenceBit);  //will be detected by arctech
+//	matched += parseEverFlourish(startSilenceP, startSilenceBit);
+//	matched += parseMandolyn(startSilenceP, startSilenceBit);
+    matched += parseTermo(startSilenceP, startSilenceBit);
+    //matched += parseX10(startSilenceP, startSilenceBit);
 	parsed = TRUE;
 	if (matched) {
 		scanP = 0;
@@ -217,7 +219,7 @@ void rfReceiveTask() {
 	}
 	return;
 }
-
+#define DEBUG
 #ifdef DEBUG
 
 void rfDebugPrintPulse(unsigned short scanP, unsigned char scanBit) {
@@ -226,9 +228,10 @@ void rfDebugPrintPulse(unsigned short scanP, unsigned char scanBit) {
 		b = '1';
 	}
 	unsigned char len = rfCountSimilar(&scanP, &scanBit);
-	for(unsigned char i = 0; i < len; ++i) {
-		putch(b);
-	}
+    printf("%c%.2X,",b,len);
+//	for(unsigned char i = 0; i < len; ++i) {
+//		putch(b);
+//	}
 }
 
 void rfDebugPrintLen(unsigned short P, unsigned char B, unsigned char len) {
