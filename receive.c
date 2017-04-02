@@ -8,6 +8,7 @@
 #include "oregonv3.h"
 #include "x10.h"
 #include "termo.h"
+#include "cooker_termo.h"
 #include "config.h"
 #include <stdio.h>
 #include <htc.h>
@@ -211,6 +212,7 @@ void rfReceiveTask() {
 //	matched += parseEverFlourish(startSilenceP, startSilenceBit);
 //	matched += parseMandolyn(startSilenceP, startSilenceBit);
     matched += parseTermo(startSilenceP, startSilenceBit);
+    matched += parseCooker(startSilenceP, startSilenceBit);
     //matched += parseX10(startSilenceP, startSilenceBit);
 	parsed = TRUE;
 	if (matched) {

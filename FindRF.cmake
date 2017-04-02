@@ -12,6 +12,7 @@ SET(_SOURCES
 #        oregonv3.c
 #        hasta.c
         termo.c
+        cooker_termo.c
 )
 
 FOREACH(_file ${_SOURCES})
